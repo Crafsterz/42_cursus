@@ -24,13 +24,13 @@ SRC = ft_isalpha.c	ft_isdigit.c	ft_isalnum.c \
 		ft_putstr_fd.c	ft_putendl_fd.c	ft_putnbr_fd.c \
 		ft_strrchr.c 
 
-MAIN_SRC = $(SRC:%.c=%.o)
+MAIN_SRC = $(SRC:.c=.o)
 
 BONUS = ft_lstnew.c	ft_lstadd_front.c	ft_lstsize.c	\
 			ft_lstlast.c	ft_lstadd_back.c	ft_lstdelone.c	\
 			ft_lstclear.c	ft_lstiter.c	ft_lstmap.c
 
-BONUS_POINTS = $(BONUS:%.c=%.o)
+BONUS_POINTS = $(BONUS:.c=.o)
 
 NAME = libft.a
 
@@ -63,10 +63,10 @@ $(BNAME): $(BONUS_POINTS) $(NAME)
 			@echo "Libft Bonus done"
 
 clean:
-	rm -rf *.o
+	rm -rf $(MAIN_SRC)
 
 fclean: clean
-	rm -rf *.a
+	rm -rf $(NAME)
 
 re: fclean all
 
