@@ -1,25 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar.c                                       :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/08 14:10:14 by mukhairu          #+#    #+#             */
-/*   Updated: 2022/12/21 19:22:11 by mukhairu         ###   ########.fr       */
+/*   Created: 2022/12/20 16:24:03 by mukhairu          #+#    #+#             */
+/*   Updated: 2022/12/20 17:53:30 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 
-// void	ft_putchar_fd(char c, int fd)
-// {
-// 	write(fd, &c, 1);
-// }
-
-//ft_putchar_fd(c, 1);
-int	ft_putchar(char c)
+void	ft_bzero(void *str, size_t len)
 {
-	write(1, &c, 1);
-	return (1);
+	size_t	i;
+
+	i = 0;
+	while (i < len)
+	{
+		*(char *)str = '\0';
+		str++;
+		i++;
+	}
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*res;
+
+	if (count == SIZE_MAX)
+		return (NULL);
+	res = malloc(count * size);
+	if (!res)
+		return (NULL);
+	ft_bzero(res, count * size);
+	return (res);
 }

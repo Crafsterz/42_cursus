@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar.c                                       :+:      :+:    :+:   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/08 14:10:14 by mukhairu          #+#    #+#             */
-/*   Updated: 2022/12/21 19:22:11 by mukhairu         ###   ########.fr       */
+/*   Created: 2022/12/20 13:45:26 by mukhairu          #+#    #+#             */
+/*   Updated: 2022/12/21 19:22:46 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 
-// void	ft_putchar_fd(char c, int fd)
-// {
-// 	write(fd, &c, 1);
-// }
-
-//ft_putchar_fd(c, 1);
-int	ft_putchar(char c)
+int	ft_putnbr(int n)
 {
-	write(1, &c, 1);
-	return (1);
+	int		nb;
+	char	*num;
+
+	nb = 0;
+	num = ft_itoa(n);
+	nb = ft_putstr(num);
+	free(num);
+	return (nb);
 }

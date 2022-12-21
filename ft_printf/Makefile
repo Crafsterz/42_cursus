@@ -6,11 +6,14 @@
 #    By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/07 14:25:45 by mukhairu          #+#    #+#              #
-#    Updated: 2022/12/08 17:54:52 by mukhairu         ###   ########.fr        #
+#    Updated: 2022/12/21 19:58:41 by mukhairu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = ft_printf.c ft_putchar_fd.c ft_putstr.c
+SRC = ft_printf.c	ft_putchar.c	ft_putstr.c \
+		ft_putnbr.c	ft_itoa_base.c	ft_hexdec.c \
+		ft_uns_dec.c	ft_pointer.c	ft_itoa.c \
+		ft_calloc.c	ft_strlen.c
 
 MAIN_SRC = $(SRC:.c=.o)
 
@@ -33,7 +36,7 @@ all: $(NAME)
 
 $(NAME):	$(MAIN_SRC)
 			$(AR) $(NAME) $(MAIN_SRC)
-	@mkdir prtf_obj/
+	@mkdir ./prtf_obj/
 	@mv $(MAIN_SRC) prtf_obj
 
 clean:
@@ -44,3 +47,5 @@ fclean: clean
 		$(RM) $(NAME)
 
 re: fclean all
+
+# The makefile will need to be checked again later
