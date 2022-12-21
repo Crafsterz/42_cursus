@@ -21,8 +21,6 @@ size_t	ft_checkconversion(va_list list, const char str)
 		tot_char += ft_putchar(va_arg(list, int));
 	if (str == 's')
 		tot_char += ft_putstr(va_arg(list, char *));
-	if (str == '%')
-		tot_char += ft_putchar('%');
 	return (tot_char);
 }
 
