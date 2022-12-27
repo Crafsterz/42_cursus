@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 17:43:53 by mukhairu          #+#    #+#             */
-/*   Updated: 2022/12/08 18:14:10 by mukhairu         ###   ########.fr       */
+/*   Updated: 2022/12/22 18:20:26 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	ft_putstr(char *s)
 
 	i = 0;
 	if (!s)
-		return ('\0');
+		s = "(null)";
 	while (s[i] != '\0')
 	{
 		ft_putchar(s[i]);

@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/21 18:03:34 by mukhairu          #+#    #+#             */
-/*   Updated: 2022/12/21 18:35:12 by mukhairu         ###   ########.fr       */
+/*   Updated: 2022/12/22 18:34:07 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,12 @@ int	ft_pointer(void *ptr)
 	total += write(1, "0x", 2);
 	str = ft_itoa_base(address, HEX_LOW);
 	if (!str)
-		return (total);
+		str = "(null)";
 	while (str[i] != '\0')
 	{
 		total += ft_putchar(str[i]);
 		i++;
 	}
+	free(str);
 	return (total);
 }

@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 19:44:53 by mukhairu          #+#    #+#             */
-/*   Updated: 2022/12/21 19:21:20 by mukhairu         ###   ########.fr       */
+/*   Updated: 2022/12/27 15:23:13 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	ft_printf(const char *str, ...)
 // {
 // 	char *str1 = "123456";
 // 	// int str1 = 50;
-// 	char str2 = 'S';
+// 	// char str2 = 'S';
 // 	int ori_count = 0;
 // 	int ft_count = 0;
 
