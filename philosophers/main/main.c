@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 14:32:55 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/17 17:04:49 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/07/19 19:08:47 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	main(int argc, char **argv)
 		return (printf("Error!"));
 	}
 	data.time = gettime();
+	start(&data);
 	printf("time: %ld\n", data.time);
 	printf("Yess!\n");
 	return (0);
