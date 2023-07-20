@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 16:29:09 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/19 19:10:26 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/07/20 19:38:45 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,34 @@ void	ft_sleep(unsigned long ms)
 		usleep(ms / 10);
 }
 
-// int	phil_died(t_philo *philo, int num)
+void	logging(t_philo *philo, char *str)
+{
+	long	time;
+
+	pthread_mutex_lock(&(philo->data->print));
+	time = gettime() - philo->data->time;
+	printf("log time: %ld, %s,\n", time, str);
+	// if (time > 0 && time <= INT_MAX && !phil_died(philo))
+	pthread_mutex_unlock(&(philo->data->print));
+}
+
+void	freeall(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_philo)
+	{
+		pthread_mutex_destroy(&(data->philo[i].fork_l));
+		pthread_mutex_destroy(data->philo[i].fork_r);
+		i++;
+	}
+	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->death);
+	pthread_mutex_destroy(&data->must_eat);
+	free(data->philo);
+}
+// int	phil_died(t_philo *philo)
 // {
 // 	pthread_mutex_lock(&philo->data->death);
 // 	if (num < philo->data->death)

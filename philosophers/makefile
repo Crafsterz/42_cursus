@@ -1,6 +1,6 @@
 NAME = philosophers
 GCC = gcc
-CFLAGS = -Wall -Werror -Wextra -fsanitize=address -g3
+CFLAGS = -Wall -Werror -Wextra -fsanitize=thread -g3
 INCLUDES = -Iincludes
 
 MAIN = main.c philos.c utils.c

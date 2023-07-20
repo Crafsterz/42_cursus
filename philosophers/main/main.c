@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 14:32:55 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/19 19:08:47 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/07/20 19:36:27 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,11 @@ int	main(int argc, char **argv)
 	data.time = gettime();
 	start(&data);
 	printf("time: %ld\n", data.time);
+	freeall(&data);
 	printf("Yess!\n");
 	return (0);
 }
+	// system("leaks philosophers");
 	// while (num < atoi(argv[1]))
 	// {
 	// 	printf("philo: %d\n", num);
