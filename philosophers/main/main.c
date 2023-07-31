@@ -6,11 +6,38 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 14:32:55 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/20 19:36:27 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/07/28 19:27:37 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+int	ft_atoi(const char *str)
+{
+	int		res;
+	int		sign;
+	int		i;
+	char	*pstr;
+
+	res = 0;
+	sign = 1;
+	i = 0;
+	pstr = (char *)str;
+	while (pstr[i] == 32 || (pstr[i] >= 9 && pstr[i] <= 13))
+		i++;
+	if (pstr[i] == '-' || pstr[i] == '+')
+	{
+		if (pstr[i] == '-')
+			sign = -(sign);
+		i++;
+	}
+	while (pstr[i] >= '0' && pstr[i] <= '9')
+	{
+		res = res * 10 + str[i] - '0';
+		i++;
+	}
+	return (res * sign);
+}
 
 static int	ft_isdigit(int c)
 {
@@ -19,6 +46,7 @@ static int	ft_isdigit(int c)
 	return (0);
 }
 
+/*To check if the input to be an integer or not*/
 static int	ft_isnum(char **str)
 {
 	int	i;
@@ -39,41 +67,40 @@ static int	ft_isnum(char **str)
 	return (1);
 }
 
+/*To initialize the global value of the data for each philosophers in 
+general. The mutex are init for later locks to prevent data race when
+the program runs. There are 2 bool statements here to check when to 
+printing of which philo has died. Is_dead is used when the philo was
+detected to be dead. philo_dead however is used when one of them has
+died. The malloc is used based on the size of the philo that was 
+called in argv*/
 int	init_data(t_data *data, char **argv)
 {
-	data->num_philo = atoi(argv[1]);
-	data->num_fork = atoi(argv[1]);
-	data->time_die = atoi(argv[2]);
-	data->time_eat = atoi(argv[3]);
-	data->time_sleep = atoi(argv[4]);
+	data->num_philo = ft_atoi(argv[1]);
+	data->time_die = ft_atoi(argv[2]);
+	data->time_eat = ft_atoi(argv[3]);
+	data->time_sleep = ft_atoi(argv[4]);
+	data->is_dead = false;
+	data->philo_dead = false;
 	data->eat_count = 0;
 	data->time = 0;
+	data->philo_ate = 0;
 	pthread_mutex_init(&data->death, NULL);
 	pthread_mutex_init(&data->print, NULL);
 	pthread_mutex_init(&data->death, NULL);
+	pthread_mutex_init(&data->must_eat, NULL);
+	pthread_mutex_init(&data->stop, NULL);
 	data->philo = malloc(sizeof(t_philo) * data->num_philo);
 	if (!data->philo)
 		return (0);
 	if (argv[5])
 	{
-		data->eat_count = atoi(argv[5]);
+		data->eat_count = ft_atoi(argv[5]);
 		if (data->eat_count == 0)
 			return (0);
 	}
 	return (1);
 }
-
-// void	*philosopher(void *arg)
-// {
-// 	t_philo	*philo;
-// 	int		id;
-// 	t_data	*data;
-
-// 	philo = (t_philo *)arg;
-// 	id = philo->id;
-// 	data = philo->data;
-// 	return (NULL);
-// }
 
 int	main(int argc, char **argv)
 {
@@ -82,23 +109,16 @@ int	main(int argc, char **argv)
 	if (!(argc >= 5 && argc <= 6))
 		return (printf("Error! Too few or too many inputs\n"));
 	if (!ft_isnum(argv))
-		return (printf("Error the input are not acceptable value\n"));
+		return (printf("Error! The input are not acceptable\n"));
 	if (!init_data(&data, argv))
 	{
 		free(data.philo);
-		return (printf("Error!"));
+		return (printf("Error!\n"));
 	}
 	data.time = gettime();
+	data.philo->total_ate = 0;
 	start(&data);
-	printf("time: %ld\n", data.time);
 	freeall(&data);
-	printf("Yess!\n");
 	return (0);
 }
 	// system("leaks philosophers");
-	// while (num < atoi(argv[1]))
-	// {
-	// 	printf("philo: %d\n", num);
-	// 	// philo.id = num;
-	// 	num++;
-	// }

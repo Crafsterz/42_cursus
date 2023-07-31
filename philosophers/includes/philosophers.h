@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:28:35 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/20 19:19:49 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/07/27 18:32:08 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,23 @@ typedef struct s_data
 	int				time_eat;
 	int				time_sleep;
 	int				num_philo;
-	int				num_fork;
 	int				eat_count;
+	int				philo_ate;
+	bool			is_dead;
+	bool			philo_dead;
 	size_t			time;
 	struct s_philo	*philo;
 	pthread_mutex_t	print;
 	pthread_mutex_t	death;
 	pthread_mutex_t	must_eat;
+	pthread_mutex_t	stop;
 }					t_data;
 
 typedef struct s_philo
 {
 	int				id;
-	long			last_meal;
+	size_t			last_meal;
 	int				total_ate;
-	bool			eating;
 	t_data			*data;
 	pthread_t		threads;
 	pthread_mutex_t	*fork_r;
@@ -52,9 +54,13 @@ typedef struct s_philo
 size_t	gettime(void);
 void	*cycle(void *phil);
 int		start(t_data *data);
-void	ft_sleep(unsigned long ms);
+void	ft_sleep(unsigned long ms, t_philo *philo);
 void	logging(t_philo *philo, char *str);
 void	freeall(t_data *data);
+int		eating(t_philo *philo);
+void	take_fork(t_philo *philo);
+void	phil_died(t_philo *philo);
+int		check_death(t_philo *philo);
 // typedef struct s_philoId
 
 #endif // !PHILOSOPHERS_H

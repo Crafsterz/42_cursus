@@ -6,12 +6,13 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 16:29:09 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/20 19:38:45 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/07/31 17:38:17 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+/*To get the time in general in miliseconds.*/
 size_t	gettime(void)
 {
 	struct timeval	tv;
@@ -20,26 +21,42 @@ size_t	gettime(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	ft_sleep(unsigned long ms)
+/*To set the sleeping time or short delay in between they finishing task to 
+allow other philo to do their tasks*/
+void	ft_sleep(unsigned long ms, t_philo *philo)
 {
 	long	time;
 
 	time = gettime();
 	while (gettime() - time < ms)
+	{
+		phil_died(philo);
 		usleep(ms / 10);
+	}
 }
 
+//This is to print the log of what happened when the program runs. The mutex
+//lock is added ensure only one thread to be printed. Unlocks once it is done
+//printed.
 void	logging(t_philo *philo, char *str)
 {
 	long	time;
 
 	pthread_mutex_lock(&(philo->data->print));
 	time = gettime() - philo->data->time;
-	printf("log time: %ld, %s,\n", time, str);
-	// if (time > 0 && time <= INT_MAX && !phil_died(philo))
+	pthread_mutex_lock(&philo->data->stop);
+	if (time >= 0 && time <= INT_MAX && (philo->data->is_dead == false
+			|| philo->data->philo_dead == false))
+	{
+		printf("%ld \t", gettime() - philo->data->time);
+		printf("%d %s\n", philo->id + 1, str);
+	}
+	pthread_mutex_unlock(&philo->data->stop);
 	pthread_mutex_unlock(&(philo->data->print));
 }
 
+/*Frees all the data that was preveiously created. At the sametime each 
+mutex that was init mutex be destroy to prevent a leak.*/
 void	freeall(t_data *data)
 {
 	int	i;
@@ -54,13 +71,18 @@ void	freeall(t_data *data)
 	pthread_mutex_destroy(&data->print);
 	pthread_mutex_destroy(&data->death);
 	pthread_mutex_destroy(&data->must_eat);
+	pthread_mutex_destroy(&data->stop);
 	free(data->philo);
 }
-// int	phil_died(t_philo *philo)
-// {
-// 	pthread_mutex_lock(&philo->data->death);
-// 	if (num < philo->data->death)
-// 	{
-		
-// 	}
-// }
+
+/*To check the deaths of the philos. If their time has reached their limit, it
+philo->data set to true.*/
+void	phil_died(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->death);
+	pthread_mutex_lock(&philo->data->stop);
+	if ((gettime() - philo->last_meal) >= (size_t)philo->data->time_die)
+		philo->data->is_dead = true;
+	pthread_mutex_unlock(&philo->data->stop);
+	pthread_mutex_unlock(&philo->data->death);
+}
