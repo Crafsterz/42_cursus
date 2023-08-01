@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 17:49:16 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/31 17:41:20 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:52:08 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,18 @@ think. This is to prevent a deadlock or an early data race. While all is a
 value of 1 it will continue until all their conditions are met.*/
 void	*cycle(void *ph)
 {
-	t_philo	*philo;
+	t_philo		*philo;
+	pthread_t	dc;
 
 	philo = (t_philo *)ph;
 	if (philo->id % 2 == 1)
+		ft_sleep(philo->data->time_eat);
+	while (!philo->data->philo_dead)
 	{
-		logging(philo, "is thinking");
-		ft_sleep(philo->data->time_eat, philo);
-	}
-	while (1)
-	{
-		if (check_death(philo))
-			return (NULL);
+		pthread_create(&dc, NULL, check_death, ph);
+		pthread_detach(dc);
 		take_fork(philo);
-		if (!eating(philo))
-			return (NULL);
+		eating(philo);
 		if (philo->total_ate == philo->data->eat_count)
 		{
 			pthread_mutex_lock(&philo->data->death);
@@ -41,9 +38,6 @@ void	*cycle(void *ph)
 			pthread_mutex_unlock(&philo->data->death);
 			return (NULL);
 		}
-		logging(philo, "is sleeping");
-		ft_sleep(philo->data->time_sleep, philo);
-		logging(philo, "is thinking");
 	}
 	return (NULL);
 }
@@ -52,22 +46,25 @@ void	*cycle(void *ph)
 logged but only 1 philo should be logged of their deaths. To prevent data
 race, their death checks are locked. Mutext_lock stop are used to stop
 another data race to the philo_dead as true.*/
-int	check_death(t_philo *philo)
+void	*check_death(void *ph)
 {
-	pthread_mutex_lock(&philo->data->death);
+	t_philo	*philo;
+
+	philo = (t_philo *)ph;
+	ft_sleep(philo->data->time_die);
+	phil_died(philo);
+	pthread_mutex_lock(&philo->data->must_eat);
+	pthread_mutex_lock(&philo->data->stop);
 	if (philo->data->is_dead == true)
 	{
-		pthread_mutex_unlock(&philo->data->death);
-		phil_died(philo);
-		logging(philo, "died");
-		pthread_mutex_lock(&philo->data->stop);
-		if (philo->data->philo_dead == false)
-			philo->data->philo_dead = true;
+		pthread_mutex_unlock(&philo->data->must_eat);
 		pthread_mutex_unlock(&philo->data->stop);
-		return (1);
+		logging(philo, "died");
+		philo->data->philo_dead = true;
 	}
-	pthread_mutex_unlock(&philo->data->death);
-	return (0);
+	pthread_mutex_unlock(&philo->data->must_eat);
+	pthread_mutex_unlock(&philo->data->stop);
+	return (NULL);
 }
 
 /*This is where the philos begin their eatime. Once they have finished eating,
@@ -75,24 +72,19 @@ their last_meal is reset that they can continue to eat again. At the sametime,
 total_eat would also increase to accumalate the total of time they have eaten
 Once they have finished eating, they drop their forks (pthread_unclock). 
 Next on the list is sleeping. If they have nothing to do, they think.*/
-int	eating(t_philo *philo)
+void	eating(t_philo *philo)
 {
-	phil_died(philo);
-	if (check_death(philo))
-	{
-		pthread_mutex_unlock(&philo->fork_l);
-		pthread_mutex_unlock(philo->fork_r);
-		return (0);
-	}
 	logging(philo, "is eating");
 	pthread_mutex_lock(&philo->data->must_eat);
 	philo->last_meal = gettime();
 	philo->total_ate++;
 	pthread_mutex_unlock(&philo->data->must_eat);
-	ft_sleep(philo->data->time_eat, philo);
+	ft_sleep(philo->data->time_eat);
 	pthread_mutex_unlock(&philo->fork_l);
 	pthread_mutex_unlock(philo->fork_r);
-	return (1);
+	logging(philo, "is sleeping");
+	ft_sleep(philo->data->time_sleep);
+	logging(philo, "is thinking");
 }
 
 /*The operation that allows the philos to their forks accordingly. Once a 
@@ -106,7 +98,8 @@ void	take_fork(t_philo *philo)
 	logging(philo, "has taken a fork");
 	if (philo->data->num_philo == 1)
 	{
-		ft_sleep(philo->data->time_die, philo);
+		pthread_mutex_unlock(&philo->fork_l);
+		ft_sleep(philo->data->time_die);
 		return ;
 	}
 	pthread_mutex_lock(philo->fork_r);

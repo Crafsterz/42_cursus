@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:28:35 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/27 18:32:08 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:33:32 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ typedef struct s_philo
 size_t	gettime(void);
 void	*cycle(void *phil);
 int		start(t_data *data);
-void	ft_sleep(unsigned long ms, t_philo *philo);
+void	ft_sleep(unsigned long ms);
 void	logging(t_philo *philo, char *str);
 void	freeall(t_data *data);
-int		eating(t_philo *philo);
+void	eating(t_philo *philo);
 void	take_fork(t_philo *philo);
 void	phil_died(t_philo *philo);
-int		check_death(t_philo *philo);
+void	*check_death(void *philo);
 // typedef struct s_philoId
 
 #endif // !PHILOSOPHERS_H

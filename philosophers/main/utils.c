@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 16:29:09 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/31 17:38:17 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/01 19:51:22 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,13 @@ size_t	gettime(void)
 
 /*To set the sleeping time or short delay in between they finishing task to 
 allow other philo to do their tasks*/
-void	ft_sleep(unsigned long ms, t_philo *philo)
+void	ft_sleep(unsigned long ms)
 {
 	long	time;
 
 	time = gettime();
 	while (gettime() - time < ms)
-	{
-		phil_died(philo);
 		usleep(ms / 10);
-	}
 }
 
 //This is to print the log of what happened when the program runs. The mutex
