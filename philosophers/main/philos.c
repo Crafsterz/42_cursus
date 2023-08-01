@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 17:49:16 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/08/01 19:52:08 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/01 20:23:24 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,11 @@ void	*cycle(void *ph)
 		{
 			pthread_mutex_lock(&philo->data->death);
 			if (++philo->data->philo_ate == philo->data->num_philo)
+			{
 				pthread_mutex_unlock(&philo->data->death);
+				philo->data->is_dead = true;
+				philo->data->philo_dead = true;
+			}
 			pthread_mutex_unlock(&philo->data->death);
 			return (NULL);
 		}
@@ -99,7 +103,7 @@ void	take_fork(t_philo *philo)
 	if (philo->data->num_philo == 1)
 	{
 		pthread_mutex_unlock(&philo->fork_l);
-		ft_sleep(philo->data->time_die);
+		ft_sleep(philo->data->time_die + 1);
 		return ;
 	}
 	pthread_mutex_lock(philo->fork_r);
