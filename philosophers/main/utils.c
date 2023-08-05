@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 16:29:09 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/08/01 19:51:22 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:29:42 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void	logging(t_philo *philo, char *str)
 	long	time;
 
 	pthread_mutex_lock(&(philo->data->print));
-	time = gettime() - philo->data->time;
 	pthread_mutex_lock(&philo->data->stop);
+	time = gettime() - philo->data->time;
 	if (time >= 0 && time <= INT_MAX && (philo->data->is_dead == false
-			|| philo->data->philo_dead == false))
+			|| !philo_dead(philo, 0)))
 	{
 		printf("%ld \t", gettime() - philo->data->time);
 		printf("%d %s\n", philo->id + 1, str);
@@ -65,21 +65,27 @@ void	freeall(t_data *data)
 		pthread_mutex_destroy(data->philo[i].fork_r);
 		i++;
 	}
+	free(data->philo);
 	pthread_mutex_destroy(&data->print);
 	pthread_mutex_destroy(&data->death);
 	pthread_mutex_destroy(&data->must_eat);
 	pthread_mutex_destroy(&data->stop);
-	free(data->philo);
 }
 
 /*To check the deaths of the philos. If their time has reached their limit, it
-philo->data set to true.*/
+philo->data->is_dead set to true.*/
 void	phil_died(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->death);
+	struct timeval	tv;
+	int				t1;
+	int				t2;
+
 	pthread_mutex_lock(&philo->data->stop);
-	if ((gettime() - philo->last_meal) >= (size_t)philo->data->time_die)
+	gettimeofday(&tv, NULL);
+	t1 = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	t2 = (philo->last_meal_tv.tv_sec * 1000)
+		+ (philo->last_meal_tv.tv_usec / 1000);
+	if ((size_t)(t1 - t2) >= (size_t)philo->data->time_die)
 		philo->data->is_dead = true;
 	pthread_mutex_unlock(&philo->data->stop);
-	pthread_mutex_unlock(&philo->data->death);
 }

@@ -1,9 +1,9 @@
 NAME = philosophers
 GCC = gcc
-CFLAGS = -Wall -Werror -Wextra -fsanitize=thread -g3 
+CFLAGS = -Wall -Werror -Wextra #-fsanitize=thread -g3 
 INCLUDES = -Iincludes
 
-MAIN = main.c philos.c utils.c
+MAIN = main.c philos.c utils.c extra.c
 
 SRCS = $(addprefix main/, $(MAIN))
 OBJ_DIR = obj

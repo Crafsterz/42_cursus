@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 17:49:16 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/08/01 20:23:24 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:17:22 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	*cycle(void *ph)
 	philo = (t_philo *)ph;
 	if (philo->id % 2 == 1)
 		ft_sleep(philo->data->time_eat);
-	while (!philo->data->philo_dead)
+	while (!philo_dead(philo, 0))
 	{
 		pthread_create(&dc, NULL, check_death, ph);
 		pthread_detach(dc);
@@ -32,14 +32,13 @@ void	*cycle(void *ph)
 		eating(philo);
 		if (philo->total_ate == philo->data->eat_count)
 		{
-			pthread_mutex_lock(&philo->data->death);
+			pthread_mutex_lock(&philo->data->stop);
 			if (++philo->data->philo_ate == philo->data->num_philo)
 			{
-				pthread_mutex_unlock(&philo->data->death);
-				philo->data->is_dead = true;
-				philo->data->philo_dead = true;
+				pthread_mutex_unlock(&philo->data->stop);
+				philo_dead(philo, 1);
 			}
-			pthread_mutex_unlock(&philo->data->death);
+			pthread_mutex_unlock(&philo->data->stop);
 			return (NULL);
 		}
 	}
@@ -57,14 +56,14 @@ void	*check_death(void *ph)
 	philo = (t_philo *)ph;
 	ft_sleep(philo->data->time_die);
 	phil_died(philo);
-	pthread_mutex_lock(&philo->data->must_eat);
 	pthread_mutex_lock(&philo->data->stop);
+	pthread_mutex_lock(&philo->data->must_eat);
 	if (philo->data->is_dead == true)
 	{
 		pthread_mutex_unlock(&philo->data->must_eat);
 		pthread_mutex_unlock(&philo->data->stop);
 		logging(philo, "died");
-		philo->data->philo_dead = true;
+		philo_dead(philo, 1);
 	}
 	pthread_mutex_unlock(&philo->data->must_eat);
 	pthread_mutex_unlock(&philo->data->stop);
@@ -81,6 +80,7 @@ void	eating(t_philo *philo)
 	logging(philo, "is eating");
 	pthread_mutex_lock(&philo->data->must_eat);
 	philo->last_meal = gettime();
+	gettimeofday(&(philo->last_meal_tv), NULL);
 	philo->total_ate++;
 	pthread_mutex_unlock(&philo->data->must_eat);
 	ft_sleep(philo->data->time_eat);
@@ -102,7 +102,6 @@ void	take_fork(t_philo *philo)
 	logging(philo, "has taken a fork");
 	if (philo->data->num_philo == 1)
 	{
-		pthread_mutex_unlock(&philo->fork_l);
 		ft_sleep(philo->data->time_die + 1);
 		return ;
 	}
@@ -128,6 +127,7 @@ int	start(t_data *data)
 	{
 		data->philo[i].id = i;
 		data->philo[i].last_meal = gettime();
+		gettimeofday(&(data->philo[i].last_meal_tv), NULL);
 		data->philo[i].data = data;
 		pthread_mutex_init(&(data->philo[i].fork_l), NULL);
 		if (i == data->num_philo - 1)

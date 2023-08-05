@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:28:35 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/08/01 19:33:32 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:34:11 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_philo
 {
 	int				id;
 	size_t			last_meal;
+	struct timeval	last_meal_tv;
 	int				total_ate;
 	t_data			*data;
 	pthread_t		threads;
@@ -50,7 +51,6 @@ typedef struct s_philo
 	pthread_mutex_t	fork_l;
 }					t_philo;
 
-// int	check_errors(char **strs);
 size_t	gettime(void);
 void	*cycle(void *phil);
 int		start(t_data *data);
@@ -61,6 +61,6 @@ void	eating(t_philo *philo);
 void	take_fork(t_philo *philo);
 void	phil_died(t_philo *philo);
 void	*check_death(void *philo);
-// typedef struct s_philoId
+int		philo_dead(t_philo *philo, int nb);
 
 #endif // !PHILOSOPHERS_H

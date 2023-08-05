@@ -6,7 +6,7 @@
 /*   By: mukhairu <mukhairu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 14:32:55 by mukhairu          #+#    #+#             */
-/*   Updated: 2023/07/28 19:27:37 by mukhairu         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:35:48 by mukhairu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ int	init_data(t_data *data, char **argv)
 	data->philo_ate = 0;
 	pthread_mutex_init(&data->death, NULL);
 	pthread_mutex_init(&data->print, NULL);
-	pthread_mutex_init(&data->death, NULL);
 	pthread_mutex_init(&data->must_eat, NULL);
 	pthread_mutex_init(&data->stop, NULL);
 	data->philo = malloc(sizeof(t_philo) * data->num_philo);
